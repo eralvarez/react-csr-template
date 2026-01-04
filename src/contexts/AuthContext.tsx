@@ -57,7 +57,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const uid = userCredential.user.uid;
 
     // Save profile to Firestore
-    await setDoc(doc(db, 'users', uid, 'profile'), {
+    await setDoc(doc(db, 'users', uid), {
       firstName,
       lastName,
       email,
