@@ -1,15 +1,34 @@
-import { Button } from '@mui/material';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { Box, CircularProgress } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 
-function App() {
+const HomePage = () => {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (loading) return;
+
+    if (user) {
+      navigate('/app');
+    } else {
+      navigate('/signin');
+    }
+  }, [user, loading, navigate]);
+
   return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <Button variant="contained">Hello world</Button>
-      </div>
-      <p>Click on the Vite and React logos to learn more</p>
-    </>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+      }}
+    >
+      <CircularProgress />
+    </Box>
   );
-}
+};
 
-export default App;
+export default HomePage;
