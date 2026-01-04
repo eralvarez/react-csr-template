@@ -15,10 +15,14 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      lib: path.resolve(__dirname, './src/lib'),
+      assets: path.resolve(__dirname, './src/assets'),
       components: path.resolve(__dirname, './src/components'),
-      pages: path.resolve(__dirname, './src/pages'),
+      contexts: path.resolve(__dirname, './src/contexts'),
       hooks: path.resolve(__dirname, './src/hooks'),
+      libs: path.resolve(__dirname, './src/libs'),
+      pages: path.resolve(__dirname, './src/pages'),
+      services: path.resolve(__dirname, './src/services'),
+      validations: path.resolve(__dirname, './src/validations'),
     },
   },
 });
