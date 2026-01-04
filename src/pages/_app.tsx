@@ -7,12 +7,15 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { theme } from '../theme';
+import { AuthProvider } from '../contexts/AuthContext';
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Outlet />
+      <AuthProvider>
+        <Outlet />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
