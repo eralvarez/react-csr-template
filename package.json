@@ -6,8 +6,9 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "develop": "npm run dev",
-    "start": "react-router-serve ./build/server/index.js",
+    "start_original": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
+    "start": "serve build/client -p 4000",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -21,12 +22,11 @@
   },
   "devDependencies": {
     "@react-router/dev": "7.14.0",
-    "@tailwindcss/vite": "^4.2.2",
     "@types/node": "^22",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "prettier": "^3.8.3",
-    "tailwindcss": "^4.2.2",
+    "serve": "^14.2.6",
     "typescript": "^5.9.3",
     "vite": "^8.0.3"
   }
