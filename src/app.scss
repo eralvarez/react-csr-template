@@ -1,0 +1,13 @@
+@use "@picocss/pico/scss/pico";
+
+:root {
+  --pico-font-family-sans-serif: "Inter", system-ui, sans-serif, var(--pico-font-family-emoji);
+  --pico-font-family: var(--pico-font-family-sans-serif);
+}
+
+html,
+body {
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}

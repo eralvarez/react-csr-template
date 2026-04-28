@@ -13,12 +13,17 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@hookform/resolvers": "^5.2.2",
+    "@picocss/pico": "^2.1.1",
     "@react-router/node": "7.14.0",
     "@react-router/serve": "7.14.0",
     "isbot": "^5.1.36",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router": "7.14.0"
+    "react-hook-form": "^7.74.0",
+    "react-router": "7.14.0",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@react-router/dev": "7.14.0",
@@ -26,6 +31,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "prettier": "^3.8.3",
+    "sass": "^1.99.0",
     "serve": "^14.2.6",
     "typescript": "^5.9.3",
     "vite": "^8.0.3"

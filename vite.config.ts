@@ -6,4 +6,11 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+      },
+    },
+  },
 });
