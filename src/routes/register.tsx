@@ -16,9 +16,9 @@ const registerSchema = yup.object({
   password: yup
     .string()
     .required('Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .matches(/[0-9]/, 'Password must contain at least one number'),
+    .min(8, 'Password must be at least 8 characters'),
+  // .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  // .matches(/[0-9]/, 'Password must contain at least one number'),
   repeatPassword: yup
     .string()
     .required('Please confirm your password')
@@ -81,7 +81,7 @@ export default function Register() {
   } = useForm<RegisterFormValues>({
     resolver: yupResolver(registerSchema),
     mode: 'onSubmit',
-    reValidateMode: 'onBlur',
+    // reValidateMode: 'onChange',
     defaultValues: {
       fullName: '',
       email: '',
@@ -100,22 +100,23 @@ export default function Register() {
 
   return (
     <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        padding: '1rem',
-        fontFamily: 'system-ui, sans-serif',
-      }}
+      // style={{
+      //   display: 'flex',
+      //   justifyContent: 'center',
+      //   alignItems: 'center',
+      //   minHeight: '100vh',
+      //   padding: '1rem',
+      //   fontFamily: 'system-ui, sans-serif',
+      // }}
     >
       <div
         style={{
-          width: '100%',
+          // width: '100%',
           maxWidth: '420px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1.5rem',
+          margin: 'auto',
+          // display: 'flex',
+          // flexDirection: 'column',
+          // gap: '1.5rem',
         }}
       >
         <div>
@@ -165,21 +166,21 @@ export default function Register() {
         >
           <fieldset>
             <label>
-              Full name
+              Full name {String(errors.fullName)}
               <input
                 {...register('fullName')}
                 type="text"
                 id="fullName"
                 placeholder="Jane Doe"
                 autoComplete="name"
-                aria-invalid={!!errors.fullName}
+                aria-invalid={Boolean(errors.fullName) ? 'true' : undefined}
                 aria-describedby="fullname-helper"
               />
-              <small id="fullname-helper">{errors.fullName?.message ?? 'Looks good!'}</small>
+              {errors.fullName?.message && (
+                <small id="fullname-helper">{errors.fullName?.message}</small>
+              )}
             </label>
-          </fieldset>
 
-          <fieldset>
             <label>
               Email
               <input
@@ -188,14 +189,12 @@ export default function Register() {
                 id="email"
                 placeholder="jane@example.com"
                 autoComplete="email"
-                aria-invalid={!!errors.email}
+                aria-invalid={Boolean(errors.email) ? 'true' : undefined}
                 aria-describedby="email-helper"
               />
-              <small id="email-helper">{errors.email?.message ?? 'Looks good!'}</small>
+              {errors.email?.message && <small id="email-helper">{errors.email?.message}</small>}
             </label>
-          </fieldset>
 
-          <fieldset>
             <label>
               Password
               <input
@@ -203,14 +202,14 @@ export default function Register() {
                 type="password"
                 id="password"
                 autoComplete="new-password"
-                aria-invalid={!!errors.password}
+                aria-invalid={Boolean(errors.password) ? 'true' : undefined}
                 aria-describedby="password-helper"
               />
-              <small id="password-helper">{errors.password?.message ?? 'Looks good!'}</small>
+              {errors.password?.message && (
+                <small id="password-helper">{errors.password?.message}</small>
+              )}
             </label>
-          </fieldset>
 
-          <fieldset>
             <label>
               Repeat password
               <input
@@ -218,29 +217,23 @@ export default function Register() {
                 type="password"
                 id="repeatPassword"
                 autoComplete="new-password"
-                aria-invalid={!!errors.repeatPassword}
+                aria-invalid={Boolean(errors.repeatPassword) ? 'true' : undefined}
                 aria-describedby="repeat-password-helper"
               />
-              <small id="repeat-password-helper">
-                {errors.repeatPassword?.message ?? 'Looks good!'}
-              </small>
+              {errors.repeatPassword?.message && (
+                <small id="repeat-password-helper">{errors.repeatPassword?.message}</small>
+              )}
             </label>
           </fieldset>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            style={{
-              padding: '0.75rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: isSubmitting ? '#9ca3af' : '#111827',
-              color: '#fff',
-              fontWeight: 600,
-              fontSize: '1rem',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              transition: 'background 0.15s',
-            }}
+            aria-busy={isSubmitting ? 'true' : undefined}
+            // style={{
+            //   background: isSubmitting ? '#9ca3af' : '#111827',
+            //   // cursor: isSubmitting ? 'not-allowed' : 'pointer',
+            // }}
           >
             {isSubmitting ? 'Creating account…' : 'Create account'}
           </button>
