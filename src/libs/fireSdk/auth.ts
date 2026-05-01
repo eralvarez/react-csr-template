@@ -17,6 +17,7 @@ import type { FnResponse } from '../../types';
 export interface UserProfile {
   uid: string;
   email: string;
+  fullName?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -38,12 +39,14 @@ export async function signIn(
 }
 
 /**
- * Register new user with email and password
+ * Register/signUp new user with email and password
  * Also creates a profile document in the userProfile collection
  */
-export async function register(
-  email: string,
-  password: string
+export async function signUp(
+  { email,
+    password,
+    profile
+  }: { email: string; password: string, profile: Partial<UserProfile> }
 ): Promise<FnResponse<UserCredential, string>> {
   try {
     // Create the auth user
@@ -54,11 +57,12 @@ export async function register(
     const userProfile: UserProfile = {
       uid: user.uid,
       email: user.email || email,
+      ...profile,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     };
 
-    await setDoc(doc(db, 'userProfile', user.uid), userProfile);
+    await setDoc(doc(db, 'users', user.uid), userProfile);
 
     return { data: userCredential, error: null };
   } catch (err: any) {

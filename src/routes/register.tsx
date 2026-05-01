@@ -3,10 +3,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useActionData, useNavigation, useSubmit } from 'react-router';
 import type { Route } from './+types/register';
-import { handleFormActionError, successResponse, validateFormData } from '../utils/forms';
+import { handleFormActionError, successResponse, validateFormData } from 'utils/forms';
+import { signUp } from 'libs/fireSdk';
 
 // --- Yup schema (defined outside component for resolver caching) ---
-const registerSchema = yup.object({
+const registerFormSchema = yup.object({
   fullName: yup
     .string()
     .required('Full name is required')
@@ -26,65 +27,36 @@ const registerSchema = yup.object({
     .oneOf([yup.ref('password')], 'Passwords do not match'),
 });
 
-type RegisterFormValues = yup.InferType<typeof registerSchema>;
-
-// --- Mock clientAction ---
-// export async function clientAction({ request }: Route.ClientActionArgs) {
-//   const formData = await request.formData();
-
-//   const rawValues = {
-//     fullName: formData.get('fullName') as string,
-//     email: formData.get('email') as string,
-//     password: formData.get('password') as string,
-//     repeatPassword: formData.get('repeatPassword') as string,
-//   };
-
-//   try {
-//     const validated = await validateFormData(registerSchema, rawValues);
-
-//     // Mock API call — replace with real registration logic
-//     await new Promise((resolve) => setTimeout(resolve, 800));
-
-//     console.log('Registering user:', { fullName: validated.fullName, email: validated.email });
-
-//     return successResponse('Account created successfully!');
-//   } catch (error) {
-//     return handleFormActionError(error);
-//   }
-// }
+type RegisterFormValues = yup.InferType<typeof registerFormSchema>;
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: 'Create an account' }];
 }
 
-// --- Register page component ---
 export default function Register() {
-  // const navigation = useNavigation();
-  // const isSubmitting = navigation.state === 'submitting';
-
-  const { register, handleSubmit, formState, getValues } = useForm<RegisterFormValues>({
-    resolver: yupResolver(registerSchema),
+  const { register, handleSubmit, formState } = useForm<RegisterFormValues>({
+    resolver: yupResolver(registerFormSchema),
     mode: 'onSubmit',
     defaultValues: {
       fullName: 'Rick Sanchez',
       email: 'rick@example.com',
       password: 'password',
-      repeatPassword: 'passwordd',
+      repeatPassword: 'password',
     },
   });
 
   // React Hook Form handles client-side validation; the native form submit
   // triggers the clientAction for the mocked server-side validation layer.
   const onSubmit = async (formValues: RegisterFormValues) => {
-    // const formValues = getValues();
-    alert(JSON.stringify(formValues, null, 2));
+    // // const formValues = getValues();
+    // alert(JSON.stringify(formValues, null, 2));
 
-    // submit(formValues, { method: 'post' });
+    // // submit(formValues, { method: 'post' });
 
-    // try {
+    // // try {
     const { data, error: formValidationError } = await validateFormData<RegisterFormValues>(
       formValues,
-      registerSchema,
+      registerFormSchema,
     );
 
     if (formValidationError) {
@@ -92,8 +64,26 @@ export default function Register() {
       return;
     }
 
+    if (!data) {
+      console.error('No data returned from validation');
+      return;
+    }
+
+    const { fullName, email, password } = data;
+
+    const { error: registrationError } = await signUp({
+      email,
+      password,
+      profile: { fullName },
+    });
+
+    if (registrationError) {
+      console.error('Registration error:', registrationError);
+      return;
+    }
+
     // Mock API call — replace with real registration logic
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    // await new Promise((resolve) => setTimeout(resolve, 800));
 
     // console.log('Registering user:', { fullName: validated.fullName, email: validated.email });
 
