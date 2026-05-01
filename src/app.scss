@@ -1,49 +1,5 @@
 @use "@picocss/pico/scss/pico";
 
-:root {
-  --pico-font-family-sans-serif: "Inter", system-ui, sans-serif, var(--pico-font-family-emoji);
-  --pico-font-family: var(--pico-font-family-sans-serif);
-}
+@use "./styles/pico_variables";
+@use "./styles/pico_colors";
 
-html,
-body {
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
-}
-
-.public-layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.public-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--pico-muted-border-color);
-}
-
-.public-nav a {
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  text-decoration: none;
-  color: var(--pico-muted-color);
-  transition: color 120ms ease, background-color 120ms ease;
-}
-
-.public-nav a:hover {
-  color: var(--pico-contrast);
-  background-color: color-mix(in srgb, var(--pico-muted-color) 14%, transparent);
-}
-
-.public-nav a.active {
-  color: var(--pico-primary-inverse);
-  background-color: var(--pico-primary);
-}
-
-.public-content {
-  flex: 1;
-}

@@ -93,22 +93,14 @@ export default function Register() {
   // React Hook Form handles client-side validation; the native form submit
   // triggers the clientAction for the mocked server-side validation layer.
   function onSubmit(_values: RegisterFormValues) {
+    alert('Form submitted! Check console for details.');
     // handleSubmit passes here only when client-side validation passes.
     // The actual submission is handled natively by React Router's Form + clientAction.
     // This handler is intentionally empty — submission proceeds via the form action.
   }
 
   return (
-    <div
-      // style={{
-      //   display: 'flex',
-      //   justifyContent: 'center',
-      //   alignItems: 'center',
-      //   minHeight: '100vh',
-      //   padding: '1rem',
-      //   fontFamily: 'system-ui, sans-serif',
-      // }}
-    >
+    <div>
       <div
         style={{
           // width: '100%',
