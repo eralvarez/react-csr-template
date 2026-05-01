@@ -21,17 +21,44 @@ Use `react-hook-form` for all form state management and validation flows.
 - Prefer `useForm`, `Controller`/`useController`, `useWatch`, and `FormProvider` where appropriate.
 - Do not implement form state with ad-hoc `useState` trees for production forms.
 - Do not use React Router `<Form>`/`fetcher.Form` as the primary form state solution for app forms.
+- **Never use `clientAction` for form handling**. All form validation, state management, and submission logic must be handled inside the component using `react-hook-form`.
+
+### Form Validation Best Practices
+
+- Always validate form data using the `validateFormData` utility from `src/utils/forms.ts`.
+- Pattern to follow (see `register.tsx` for reference):
+  ```tsx
+  const { data, error } = await validateFormData<FormValues>(formValues, schema);
+  if (error) {
+    // Handle validation errors
+    return;
+  }
+  // Proceed with validated data
+  ```
+- Define Yup schemas outside components for resolver caching.
+- Use the `FnResponse<TData, TError>` type for all functions that might throw exceptions (async operations, validation, API calls).
+  ```tsx
+  async function myAsyncFn(): Promise<FnResponse<User, string>> {
+    try {
+      const user = await fetchUser();
+      return { data: user, error: null };
+    } catch (err) {
+      return { data: null, error: 'Failed to fetch user' };
+    }
+  }
+  ```
 
 ## Routing And Data Conventions
 
 In route modules:
 
 - Allowed exports for data/mutations in this SPA:
-  - `export async function clientLoader(...) { ... }`
-  - `export async function clientAction(...) { ... }`
+  - `export async function clientLoader(...) { ... }` (for data fetching only)
+  - **Do not use `clientAction` for forms** — handle all form logic within components using `react-hook-form`
 - Disallowed exports:
   - `export async function loader(...) { ... }`
   - `export async function action(...) { ... }`
+  - `export async function clientAction(...) { ... }` (for form handling)
 
 ## Configuration Guardrail
 
