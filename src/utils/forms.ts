@@ -5,15 +5,17 @@ import type { FnResponse } from 'types';
 /**
  * Standard response shape for client actions handling forms
  */
-export type FormActionResponse<TData = unknown> = {
-  success: true;
-  message: string;
-  data?: TData;
-} | {
-  success: false;
-  message: string;
-  fieldErrors?: Record<string, string>;
-};
+export type FormActionResponse<TData = unknown> =
+  | {
+      success: true;
+      message: string;
+      data?: TData;
+    }
+  | {
+      success: false;
+      message: string;
+      fieldErrors?: Record<string, string>;
+    };
 
 /**
  * Handles yup validation errors and returns a standardized error response
@@ -24,29 +26,20 @@ export function handleYupValidationError(error: yup.ValidationError) {
     return acc;
   }, {});
 
-  return data<FormActionResponse>(
-    { success: false, fieldErrors, message: '' },
-    { status: 422 }
-  );
+  return data<FormActionResponse>({ success: false, fieldErrors, message: '' }, { status: 422 });
 }
 
 /**
  * Returns a generic error response for unexpected errors
  */
 export function handleUnexpectedError(message = 'Something went wrong. Please try again.') {
-  return data<FormActionResponse>(
-    { success: false, message },
-    { status: 500 }
-  );
+  return data<FormActionResponse>({ success: false, message }, { status: 500 });
 }
 
 /**
  * Returns a success response
  */
-export function successResponse<TData = unknown>(
-  message: string,
-  responseData?: TData
-) {
+export function successResponse<TData = unknown>(message: string, responseData?: TData) {
   return data<FormActionResponse<TData>>({
     success: true,
     message,
@@ -67,7 +60,10 @@ export async function validateFormData<T>(
     const data = await schema.cast(validatedData, { stripUnknown: true });
     return { data, error: null };
   } catch (error) {
-    return { data: null, error: error instanceof yup.ValidationError ? error : 'Validation failed' };
+    return {
+      data: null,
+      error: error instanceof yup.ValidationError ? error : 'Validation failed',
+    };
   }
 }
 

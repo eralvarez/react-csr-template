@@ -3,11 +3,7 @@ import {
   createUserWithEmailAndPassword,
   type UserCredential,
 } from 'firebase/auth';
-import {
-  doc,
-  setDoc,
-  Timestamp,
-} from 'firebase/firestore';
+import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { auth, db } from './index';
 import type { FnResponse } from '../../types';
 
@@ -27,7 +23,7 @@ export interface UserProfile {
  */
 export async function signIn(
   email: string,
-  password: string
+  password: string,
 ): Promise<FnResponse<UserCredential, string>> {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -42,12 +38,15 @@ export async function signIn(
  * Register/signUp new user with email and password
  * Also creates a profile document in the userProfile collection
  */
-export async function signUp(
-  { email,
-    password,
-    profile
-  }: { email: string; password: string, profile: Partial<UserProfile> }
-): Promise<FnResponse<UserCredential, string>> {
+export async function signUp({
+  email,
+  password,
+  profile,
+}: {
+  email: string;
+  password: string;
+  profile: Partial<UserProfile>;
+}): Promise<FnResponse<UserCredential, string>> {
   try {
     // Create the auth user
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);

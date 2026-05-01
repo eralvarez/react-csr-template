@@ -192,6 +192,7 @@ npm install @playwright/test -D
 ```
 
 The testing skill provides patterns for:
+
 - Reconnaissance (screenshot, DOM inspection)
 - Selector discovery
 - Server lifecycle management
