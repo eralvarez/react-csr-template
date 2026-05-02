@@ -5,7 +5,8 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { auth, db } from './index';
-import type { FnResponse } from '../../types';
+import type { FnResponse } from 'types';
+import { usersCollection } from "db/collections";
 
 /**
  * User profile data stored in Firestore
@@ -14,8 +15,9 @@ export interface UserProfile {
   uid: string;
   email: string;
   fullName?: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+  deletedAt?: Timestamp | null;
 }
 
 /**
@@ -57,11 +59,12 @@ export async function signUp({
       uid: user.uid,
       email: user.email || email,
       ...profile,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
+      // createdAt: Timestamp.now(),
+      // updatedAt: Timestamp.now(),
     };
 
-    await setDoc(doc(db, 'users', user.uid), userProfile);
+    // await setDoc(doc(db, 'users', user.uid), userProfile);
+    await usersCollection.create(userProfile);
 
     return { data: userCredential, error: null };
   } catch (err: any) {
