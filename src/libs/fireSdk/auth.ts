@@ -6,7 +6,7 @@ import {
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { auth, db } from './index';
 import type { FnResponse } from 'types';
-import { usersCollection } from "db/collections";
+import { usersCollection, type User } from "db/collections";
 
 /**
  * User profile data stored in Firestore
@@ -47,7 +47,7 @@ export async function signUp({
 }: {
   email: string;
   password: string;
-  profile: Partial<UserProfile>;
+  profile: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>;
 }): Promise<FnResponse<UserCredential, string>> {
   try {
     // Create the auth user
@@ -55,16 +55,17 @@ export async function signUp({
     const user = userCredential.user;
 
     // Create the profile document in Firestore using auth ID
-    const userProfile: UserProfile = {
-      uid: user.uid,
-      email: user.email || email,
-      ...profile,
+    const userProfile: Partial<User> = {
+      // uid: user.uid,
+      // email,
+      fullName: profile.fullName,
+      // ...profile,
       // createdAt: Timestamp.now(),
       // updatedAt: Timestamp.now(),
     };
 
     // await setDoc(doc(db, 'users', user.uid), userProfile);
-    await usersCollection.create(userProfile);
+    await usersCollection.create(userProfile as User);
 
     return { data: userCredential, error: null };
   } catch (err: any) {
