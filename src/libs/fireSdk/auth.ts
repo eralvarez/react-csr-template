@@ -57,7 +57,8 @@ export async function signUp({
     // Create the profile document in Firestore using auth ID
     const userProfile: Partial<User> = {
       // uid: user.uid,
-      // email,
+      id: user.uid,
+      email,
       fullName: profile.fullName,
       // ...profile,
       // createdAt: Timestamp.now(),
