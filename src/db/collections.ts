@@ -14,6 +14,7 @@ import * as yup from 'yup';
 
 // Complete User type for Firestore collection (explicit definition)
 export type User = {
+  authId: string;
   id: string;
   fullName: string;
   email: string;
@@ -24,6 +25,7 @@ export type User = {
 
 // Flexible validation schema - prevents extra props but keeps fields optional for create/update
 const userSchema = yup.object({
+  authId: yup.string(),
   id: yup.string(),
   fullName: yup.string(),
   email: yup.string().email(),

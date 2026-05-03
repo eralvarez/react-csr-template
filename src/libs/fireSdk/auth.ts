@@ -47,7 +47,7 @@ export async function signUp({
 }: {
   email: string;
   password: string;
-  profile: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>;
+  profile: Partial<Omit<User, 'id' | 'authId' | 'createdAt' | 'updatedAt' | 'deletedAt'>>;
 }): Promise<FnResponse<UserCredential, string>> {
   try {
     // Create the auth user
@@ -56,7 +56,7 @@ export async function signUp({
 
     // Create the profile document in Firestore using auth ID
     const userProfile: Partial<User> = {
-      // uid: user.uid,
+      authId: user.uid,
       id: user.uid,
       email,
       fullName: profile.fullName,
