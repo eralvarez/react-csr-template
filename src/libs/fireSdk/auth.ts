@@ -54,19 +54,16 @@ export async function signUp({
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Create the profile document in Firestore using auth ID
     const userProfile: Partial<User> = {
-      authId: user.uid,
+      // authId: user.uid,
       id: user.uid,
-      email,
+      email: email,
       fullName: profile.fullName,
-      // ...profile,
-      // createdAt: Timestamp.now(),
-      // updatedAt: Timestamp.now(),
     };
 
     // await setDoc(doc(db, 'users', user.uid), userProfile);
-    await usersCollection.create(userProfile as User);
+    // await usersCollection.create(userProfile as Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>);
+    await usersCollection.create(userProfile);
 
     return { data: userCredential, error: null };
   } catch (err: any) {

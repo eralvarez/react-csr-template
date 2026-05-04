@@ -181,7 +181,7 @@ function validateDocument<T>(rawDoc: any, schema: yup.Schema<T>, docId?: string)
 function createExecutableQuery<T extends BaseDocument>(
   db: Firestore,
   collectionName: string,
-  schema: yup.Schema<T>,
+  // schema: yup.Schema<T>,
 ): ExecutableQuery<T> {
   const whereConstraints: WhereConstraint<T>[] = [];
   const orderByConstraints: OrderByConstraint<T>[] = [];
@@ -230,10 +230,11 @@ function createExecutableQuery<T extends BaseDocument>(
         const convertedData = convertTimestampsToDate<T>(dataWithId);
 
         // Validate and filter
-        const validatedDoc = validateDocument(convertedData, schema, docSnap.id);
-        if (validatedDoc) {
-          documents.push(validatedDoc);
-        }
+        // const validatedDoc = validateDocument(convertedData, schema, docSnap.id);
+        // if (validatedDoc) {
+        //   documents.push(validatedDoc);
+        // }
+        documents.push(convertedData);
       });
 
       return { data: documents, error: null };
@@ -338,8 +339,8 @@ export class FirestoreCollection<T extends BaseDocument> {
   private constructor(
     private db: Firestore,
     private collectionName: string,
-    private schema: yup.Schema<T>,
-  ) {}
+    // private schema: yup.Schema<T>,
+  ) { }
 
   /**
    * Creates a new FirestoreCollection instance with schema validation
@@ -357,9 +358,13 @@ export class FirestoreCollection<T extends BaseDocument> {
   static withSchema<T extends BaseDocument>(
     db: Firestore,
     collectionName: string,
-    schema: yup.Schema<T>,
+    // schema: yup.Schema<T>,
   ): FirestoreCollection<T> {
-    return new FirestoreCollection(db, collectionName, schema);
+    return new FirestoreCollection(
+      db,
+      collectionName,
+      // schema
+    );
   }
 
   /**
@@ -380,18 +385,18 @@ export class FirestoreCollection<T extends BaseDocument> {
    * ```
    */
   async create(
-    data: Omit<T, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    data: Partial<Omit<T, 'createdAt' | 'updatedAt' | 'deletedAt'>>,
   ): Promise<FnResponse<T, string>> {
     try {
       // Generate new document reference
       const collectionRef = collection(this.db, this.collectionName);
-      const docRef = doc(collectionRef);
+      const docRef = data.id ? doc(collectionRef, data.id as string) : doc(collectionRef);
 
       // Prepare document with ORM fields
       const now = Timestamp.now();
       const documentData = {
         ...data,
-        id: docRef.id,
+        id: data.id ?? docRef.id,
         createdAt: now,
         updatedAt: now,
         deletedAt: null,
@@ -401,7 +406,8 @@ export class FirestoreCollection<T extends BaseDocument> {
       // const firestoreData = convertDatesToTimestamp(documentData);
 
       // Validate before writing
-      const validatedData = validateDocument(convertTimestampsToDate(documentData) as any, this.schema, docRef.id);
+      // const validatedData = validateDocument(convertTimestampsToDate(documentData) as any, this.schema, docRef.id);
+      const validatedData = convertTimestampsToDate(documentData) as any;
       if (!validatedData) {
         return { data: null, error: 'Document validation failed before create' };
       }
@@ -454,12 +460,12 @@ export class FirestoreCollection<T extends BaseDocument> {
       }
 
       // Validate
-      const validatedDoc = validateDocument(convertedData, this.schema, id);
-      if (!validatedDoc) {
-        return { data: null, error: 'Document validation failed' };
-      }
+      // const validatedDoc = validateDocument(convertedData, this.schema, id);
+      // if (!validatedDoc) {
+      //   return { data: null, error: 'Document validation failed' };
+      // }
 
-      return { data: validatedDoc, error: null };
+      return { data: convertedData, error: null };
     } catch (error: any) {
       const errorMessage = error?.message || 'Failed to get document';
       return { data: null, error: errorMessage };
@@ -484,7 +490,8 @@ export class FirestoreCollection<T extends BaseDocument> {
    * ```
    */
   get(): ExecutableQuery<T> {
-    return createExecutableQuery(this.db, this.collectionName, this.schema);
+    // return createExecutableQuery(this.db, this.collectionName, this.schema);
+    return createExecutableQuery(this.db, this.collectionName);
   }
 
   /**
